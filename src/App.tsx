@@ -1,26 +1,42 @@
 import { useState } from 'react';
-
+import { Item } from './types/item'
+import { ListItem } from './components/ListItem'
+import { AddArea } from './components/AddArea'
 import { Container, Area, Header } from './App.styles'
 
-import { Item } from './types/item'
-
-import { ListItem } from './components/ListItem'
-
 export default function App() {
-  const [list, setList] = useState<Item[]>([
-    { id: 1, name: 'Aprender Node',  done: false },
-    { id: 2, name: 'Aprender React', done: true },
-  ])
+  const [list, setList] = useState<Item[]>([])
+
+  function hadleAddTask(taskName: string) {
+    let newList = [...list]
+    newList.push({
+      id: list.length + 1,
+      name: taskName,
+      done: false
+    })
+    setList(newList)
+  }
+
+  function handleSetDone(id: number, done: boolean) {
+    let newList = [...list]
+
+    for (let i in newList) {
+      if (newList[i].id === id) {
+        newList[i].done = done;
+      }
+    }
+    setList(newList);
+  }
 
   return (
       <Container>
         <Area>
           <Header>Lista de Tarefas</Header>
 
-          {/* {Área para adicionar novos item à lista} */}
+          <AddArea onEnter={hadleAddTask} />
 
           {list.map((item, index) => (
-            <ListItem key={index} item={item} />
+            <ListItem key={index} item={item} setDone={handleSetDone}/>
           ))}
         </Area>
       </Container>
